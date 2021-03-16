@@ -2,23 +2,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
 
-// Import Auth from the access-control subdirectory
-import "./access-control/Auth.sol";
+// Import Ownable from the OpenZeppelin Contracts library
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Box {
+// Make Box inherit from the Ownable contract
+contract Box is Ownable {
     uint256 private value;
-    Auth private auth;
 
     event ValueChanged(uint256 newValue);
 
-    constructor(Auth _auth) public {
-        auth = _auth;
-    }
-
-    function store(uint256 newValue) public {
-        // Require that the caller is registered as an administrator in Auth
-        require(auth.isAdministrator(msg.sender), "Unauthorized");
-
+    // The onlyOwner modifier restricts who can call the store function
+    function store(uint256 newValue) public onlyOwner {
         value = newValue;
         emit ValueChanged(newValue);
     }
